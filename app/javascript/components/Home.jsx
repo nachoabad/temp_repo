@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Pagination from "./Pagination";
 
 export default () => {
   const [companies, setCompanies] = useState([]);
@@ -6,10 +7,12 @@ export default () => {
   const [industry, setIndustry] = useState("");
   const [minEmployee, setMinEmployee] = useState("");
   const [minimumDealAmount, setMinimumDealAmount] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [errorMessage, setErrorMessage] = useState(null);
 
   const fetchData = async () => {
-    const url = `/api/v1/companies?name=${companyName}&industry=${industry}&min_employee=${minEmployee}&min_deal_amount=${minimumDealAmount}`;
+    const url = `/api/v1/companies?name=${companyName}&industry=${industry}&min_employee=${minEmployee}&min_deal_amount=${minimumDealAmount}&page=${currentPage}`;
 
     try {
       const response = await fetch(url);
@@ -20,6 +23,7 @@ export default () => {
       }
 
       setCompanies(data.companies);
+      setTotalPages(data.pagination.pages);
       setErrorMessage(null);
     } catch (err) {
       setErrorMessage(err.message);
@@ -31,11 +35,12 @@ export default () => {
       fetchData();
     }, 300);
     return () => clearTimeout(debouncedFetch);
-  }, [companyName, industry, minEmployee, minimumDealAmount]);
+  }, [currentPage, companyName, industry, minEmployee, minimumDealAmount]);
 
   const onChange = (e, setChange) => {
     const { value } = e.target;
     setChange(value);
+    setCurrentPage(1)
   }
 
   return (
@@ -86,6 +91,8 @@ export default () => {
               ))}
             </tbody>
           </table>
+
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={page => setCurrentPage(page)} />
         </div>
       </div>
     </div>
