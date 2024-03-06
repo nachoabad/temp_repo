@@ -1,6 +1,10 @@
 class Api::V1::CompaniesController < ApplicationController
+  include Pagy::Backend
+
   def index
-    companies = Company.all.order(created_at: :desc)
-    render json: companies.as_json(include: :deals)
+    companies = CompanyQuery.call(Company.all, params)
+    pagination, companies = pagy(companies, items: params[:items] || 2)
+
+    render json: { companies: companies, pagination: pagy_metadata(pagination) }
   end
 end
