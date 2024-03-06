@@ -86,7 +86,7 @@ export default () => {
                   <td>{company.name}</td>
                   <td>{company.industry}</td>
                   <td>{company.employee_count}</td>
-                  <td>{company.deals_count}</td>
+                  <td>{company.deals_amounts_sum}</td>
                 </tr>
               ))}
             </tbody>

@@ -3,8 +3,13 @@ require 'rails_helper'
 RSpec.describe 'Api::V1::CompaniesController', type: :request do
   describe 'GET /api/v1/companies' do
     before do
-      FactoryBot.create(:company, name: "Tech Company", industry: "Technology")
-      FactoryBot.create(:company, name: "Health Company", industry: "Healthcare")
+      company1 = FactoryBot.create(:company, name: "Tech Company", industry: "Technology")
+      company2 = FactoryBot.create(:company, name: "Health Company", industry: "Healthcare")
+
+      FactoryBot.create(:deal, amount: 100, company: company1)
+      FactoryBot.create(:deal, amount: 200, company: company1)
+      FactoryBot.create(:deal, amount: 300, company: company2)
+      FactoryBot.create(:deal, amount: 400, company: company2)
     end
 
     it 'returns all companies without any filter' do
