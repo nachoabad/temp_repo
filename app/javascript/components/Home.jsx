@@ -3,16 +3,18 @@ import Pagination from "./Pagination";
 
 export default () => {
   const [companies, setCompanies] = useState([]);
-  const [companyName, setCompanyName] = useState("");
-  const [industry, setIndustry] = useState("");
-  const [minEmployee, setMinEmployee] = useState("");
-  const [minimumDealAmount, setMinimumDealAmount] = useState("");
+  const [formData, setFormData] = useState({
+    companyName: "",
+    industry: "",
+    minEmployee: "",
+    minimumDealAmount: "",
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [errorMessage, setErrorMessage] = useState(null);
 
   const fetchData = async () => {
-    const url = `/api/v1/companies?name=${companyName}&industry=${industry}&min_employee=${minEmployee}&min_deal_amount=${minimumDealAmount}&page=${currentPage}`;
+    const url = `/api/v1/companies?name=${formData.companyName}&industry=${formData.industry}&min_employee=${formData.minEmployee}&min_deal_amount=${formData.minimumDealAmount}&page=${currentPage}`;
 
     try {
       const response = await fetch(url);
@@ -35,13 +37,16 @@ export default () => {
       fetchData();
     }, 300);
     return () => clearTimeout(debouncedFetch);
-  }, [currentPage, companyName, industry, minEmployee, minimumDealAmount]);
+  }, [currentPage, formData]);
 
-  const onChange = (e, setChange) => {
-    const { value } = e.target;
-    setChange(value);
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
     setCurrentPage(1)
-  }
+  };
 
   return (
     <div className="vw-100 primary-color d-flex align-items-center justify-content-center">
@@ -51,22 +56,22 @@ export default () => {
 
           <label htmlFor="company-name">Company Name</label>
           <div className="input-group mb-3">
-            <input type="text" className="form-control" id="company-name" value={companyName} onChange={e => onChange(e, setCompanyName)} />
+            <input type="text" name="companyName" className="form-control" id="company-name" value={formData.companyName} onChange={handleChange} />
           </div>
 
           <label htmlFor="industry">Industry</label>
           <div className="input-group mb-3">
-            <input type="text" className="form-control" id="industry" value={industry} onChange={e => onChange(e, setIndustry)} />
+            <input type="text" name="industry" className="form-control" id="industry" value={formData.industry} onChange={handleChange} />
           </div>
 
           <label htmlFor="min-employee">Minimum Employee Count</label>
           <div className="input-group mb-3">
-            <input type="number" className="form-control" id="min-employee" value={minEmployee} onChange={e => onChange(e, setMinEmployee)} />
+            <input type="number" name="minEmployee" className="form-control" id="min-employee" value={formData.minEmployee} onChange={handleChange} />
           </div>
 
           <label htmlFor="min-amount">Minimum Deal Amount</label>
           <div className="input-group mb-3">
-            <input type="number" className="form-control" id="min-amount" value={minimumDealAmount} onChange={e => onChange(e, setMinimumDealAmount)} />
+            <input type="number" name="minimumDealAmount" className="form-control" id="min-amount" value={formData.minimumDealAmount} onChange={handleChange} />
           </div>
 
           {errorMessage && <p>Error message: {errorMessage}</p>}
