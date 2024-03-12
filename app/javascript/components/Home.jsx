@@ -33,10 +33,14 @@ export default () => {
   };
 
   useEffect(() => {
-    const debouncedFetch = setTimeout(() => {
+    if (Object.values(formData).some(value => typeof value === 'string' && value.trim() !== '')) {
+      const debouncedFetch = setTimeout(() => {
+        fetchData();
+      }, 300);
+      return () => clearTimeout(debouncedFetch);
+    } else {
       fetchData();
-    }, 300);
-    return () => clearTimeout(debouncedFetch);
+    }
   }, [currentPage, formData]);
 
   const handleChange = (event) => {
